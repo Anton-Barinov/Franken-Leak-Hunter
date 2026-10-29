@@ -152,6 +152,26 @@ run_test("Exception Resilience: Clean Snapshot Teardown on Error", function() {
     assert($cleanReport !== null, "Hunter must be immediately reusable after unhandled exception");
 });
 
+// 6. Out-of-Order Lifecycle Disorder (Stop before start & double start)
+run_test("Out-of-Order Lifecycle Disorder Handling", function() {
+    Hunter::reset();
+
+    // Out-of-order 1: Calling stop() without start() must throw LogicException safely
+    $threwLogic = false;
+    try {
+        Hunter::stop();
+    } catch (\LogicException $e) {
+        $threwLogic = true;
+    }
+    assert($threwLogic === true, "stop() before start() must throw LogicException");
+
+    // Out-of-order 2: Double start() in a row without stop() must not corrupt internal state
+    Hunter::start();
+    Hunter::start(); // Second start should safely re-capture snapshot
+    $report = Hunter::stop();
+    assert($report !== null, "stop() after double start() must return valid report");
+});
+
 echo "\n--------------------------------------------------------\n";
 echo "Chaos Results: {$passed} Passed, {$failed} Failed\n";
 echo "--------------------------------------------------------\n";
