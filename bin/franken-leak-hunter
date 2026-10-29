@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Franken-Leak-Hunter CLI Entrypoint
+ *
+ * @author Anton Barinov <https://github.com/Anton-Barinov>
+ * @license MIT
+ */
+
+// Autoload dependencies
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
+} else {
+    require_once __DIR__ . '/../src/autoload.php';
+}
+
+use FrankenLeakHunter\Console\Application;
+
+$app = new Application();
+exit($app->run($argv));
