@@ -57,9 +57,13 @@ foreach ($suites as $name => $tests) {
     echo "\n";
 }
 
+echo "=== Chaos & Fault-Injection Tests ===\n";
+passthru(PHP_BINARY . ' ' . escapeshellarg(__DIR__ . '/ChaosTest.php'), $chaosExit);
+echo "\n";
+
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n";
-if ($passed === $total) {
-    echo "🎉 ALL TESTS PASSED ({$passed}/{$total})!\n";
+if ($passed === $total && $chaosExit === 0) {
+    echo "🎉 ALL TESTS PASSED ({$passed}/{$total} Unit Tests + 5 Chaos Tests)!\n";
     exit(0);
 } else {
     echo "❌ SOME TESTS FAILED ({$passed}/{$total})\n";
